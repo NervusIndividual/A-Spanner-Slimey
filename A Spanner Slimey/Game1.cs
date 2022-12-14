@@ -58,8 +58,6 @@ namespace A_Spanner_Slimey
             foreach (var sprite in _sprites)
                 sprite.Update(gameTime, _sprites);
 
-            player.hero_animate(gameTime);
-
             base.Update(gameTime);
         }
 

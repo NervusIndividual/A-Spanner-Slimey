@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using A_Spanner_Slimey.Models;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -14,14 +15,15 @@ namespace A_Spanner_Slimey.Sprites
         public static Texture2D heroTexture_idle;
         public static Texture2D heroTexture_walking;
         public static Texture2D heroTexture_whacking;
-        float timer;
-        int hero_fps;
+        public float timer;
+        public int hero_fps;
         public byte HeroAnimationIndex;
         public string heroState = "idling";
         public string heroDirection = "Right";
         public Rectangle hero_hitbox;
         public Rectangle wrench_hitbox;
         Rectangle[] sourceRectangles;
+        Animator animator = new Animator();
         
         
 
@@ -31,7 +33,7 @@ namespace A_Spanner_Slimey.Sprites
             Speed = 125f;
             Velocity = Vector2.Zero;
             timer = 0;
-            hero_fps = 200;
+            hero_fps = 100;
 
             _texture = heroTexture_idle;
 
@@ -79,7 +81,7 @@ namespace A_Spanner_Slimey.Sprites
 
             Velocity = Vector2.Zero;
 
-            hero_animate(gameTime);
+            animator.hero_animate(gameTime, this);
         }
 
         private void Move(GameTime gameTime)
@@ -160,68 +162,6 @@ namespace A_Spanner_Slimey.Sprites
                     SpriteEffects.None,
                     0f
                     );
-            }
-        }
-
-        public void hero_animate(GameTime gameTime)
-        {
-            // ANIMATION LOGIC
-            if (heroState == "idling")
-            {
-                if (timer > hero_fps)
-                {
-                    if (HeroAnimationIndex >= 3)
-                    {
-                        HeroAnimationIndex = 0;
-                    }
-                    else
-                    {
-                        HeroAnimationIndex++;
-                    }
-                    timer = 0;
-                }
-                else
-                {
-                    timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-                }
-            }
-            if (heroState == "walking")
-            {
-                if (timer > hero_fps)
-                {
-                    if (HeroAnimationIndex >= 7)
-                    {
-                        HeroAnimationIndex = 0;
-                    }
-                    else
-                    {
-                        HeroAnimationIndex++;
-                    }
-                    timer = 0;
-                }
-                else
-                {
-                    timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-                }
-            }
-            if (heroState == "whacking")
-            {
-                if (timer > hero_fps)
-                {
-                    if (HeroAnimationIndex >= 6)
-                    {
-                        HeroAnimationIndex = 0;
-                    }
-                    else
-                    {
-                        HeroAnimationIndex++;
-                    }
-                    timer = 0;
-                }
-                else
-                {
-                    timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-                }
             }
         }
     }

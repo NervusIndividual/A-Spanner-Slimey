@@ -27,7 +27,6 @@ namespace A_Spanner_Slimey.Sprites
         {
             full_tree_texture = Content.Load<Texture2D>("Images\\Objects\\Tree_Full");
             hit_tree_texture = Content.Load<Texture2D>("Images\\Objects\\Tree_Bald");
-            
         }
     }
 }

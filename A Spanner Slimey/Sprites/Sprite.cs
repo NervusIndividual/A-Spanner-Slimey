@@ -21,7 +21,7 @@ namespace A_Spanner_Slimey.Sprites
         public Rectangle hitbox
         { get
             {
-                return new Rectangle((int)Position.X+64, (int)Position.Y+64, _texture.Width/2, _texture.Width/2);
+                return new Rectangle((int)Position.X, (int)Position.Y, _texture.Width/2, _texture.Width/2);
             } 
         }
 
