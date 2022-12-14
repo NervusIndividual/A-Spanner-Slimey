@@ -15,6 +15,7 @@ namespace A_Spanner_Slimey.Sprites
         public static Texture2D heroTexture_idle;
         public static Texture2D heroTexture_walking;
         public static Texture2D heroTexture_whacking;
+        public Vector2 to_spot;
         public float timer;
         public int hero_fps;
         public byte HeroAnimationIndex;
@@ -25,11 +26,10 @@ namespace A_Spanner_Slimey.Sprites
         Rectangle[] sourceRectangles;
         Animator animator = new Animator();
         
-        
-
         public void hero_init(GraphicsDeviceManager _graphics)
         {
             Position = new Vector2(100, 100);/*(_graphics.PreferredBackBufferWidth / 2, (_graphics.PreferredBackBufferHeight / 2) - 70);*/
+            to_spot = Position;
             Speed = 125f;
             Velocity = Vector2.Zero;
             timer = 0;
@@ -62,8 +62,10 @@ namespace A_Spanner_Slimey.Sprites
         public override void Update(GameTime gameTime, List<Sprite> sprites)
         {
             Move(gameTime);
+            animator.hero_animate(gameTime, this);
 
-            foreach(var sprite in sprites) 
+
+            foreach (var sprite in sprites) 
             {
                 if (sprite == this)
                     continue;
@@ -78,50 +80,31 @@ namespace A_Spanner_Slimey.Sprites
             }
             
             Position += Velocity;
-
             Velocity = Vector2.Zero;
-
-            animator.hero_animate(gameTime, this);
+            
         }
 
         private void Move(GameTime gameTime)
         {
             // MOVEMENT LOGIC
-            var kstate = Keyboard.GetState();
+            var mousestate = Mouse.GetState();
 
-            if (kstate.IsKeyDown(Keys.Up) || kstate.IsKeyDown(Keys.W))
+            if (mousestate.LeftButton == ButtonState.Pressed)
             {
-                Velocity.Y = -Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                _texture = heroTexture_walking;
+                to_spot = new Vector2((int)mousestate.X, (int)mousestate.Y);
+                if(to_spot.X < Position.X)
+                {
+                    heroDirection = "Left";
+                    _texture = heroTexture_walking;
+                }
+                if(to_spot.X > Position.X)
+                {
+                    heroDirection = "Right";
+                    _texture = heroTexture_walking;
+                }
             }
 
-            if (kstate.IsKeyDown(Keys.Down) || kstate.IsKeyDown(Keys.S))
-            {
-                Velocity.Y = Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                _texture = heroTexture_walking;
-            }
-
-            if (kstate.IsKeyDown(Keys.Left) || kstate.IsKeyDown(Keys.A))
-            {
-                Velocity.X = -Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                _texture = heroTexture_walking;
-                heroDirection = "Left";
-            }
-
-            if (kstate.IsKeyDown(Keys.Right) || kstate.IsKeyDown(Keys.D))
-            {
-                Velocity.X = Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                _texture = heroTexture_walking;
-                heroDirection = "Right";
-            }
-
-            if (kstate.IsKeyDown(Keys.Space))
-            {
-                _texture = heroTexture_whacking;
-                heroState = "whacking";
-            }
-
-            if (kstate.GetPressedKeyCount() == 0)
+            if (hitbox.Contains(to_spot))
             {
                 if (HeroAnimationIndex >= 3)
                 {
@@ -129,7 +112,29 @@ namespace A_Spanner_Slimey.Sprites
                 }
                 _texture = heroTexture_idle;
                 heroState = "idling";
+                Velocity = Vector2.Zero;
+                to_spot = Position;
+                return;
+            }
 
+            if (to_spot.X < Position.X)
+            {
+                Velocity.X = -Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+
+            if (to_spot.X > Position.X)
+            {
+                Velocity.X = Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+
+            if (to_spot.Y < Position.Y)
+            {
+                Velocity.Y = -Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+
+            if (to_spot.Y > Position.Y)
+            {
+                Velocity.Y = Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
         }
 

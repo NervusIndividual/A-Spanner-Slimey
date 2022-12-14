@@ -13,5 +13,6 @@ namespace A_Spanner_Slimey.Models
         public Keys Down;
         public Keys Left;
         public Keys Right;
+        
     }
 }
